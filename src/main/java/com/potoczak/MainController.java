@@ -70,8 +70,14 @@ public class MainController {
     private boolean checkFields()
     {
         if(checkCorrect(ShortBreakCheckBox,ShortTextField) && checkCorrect(LongBreakCheckBox,LongTextField)
-                && checkCorrect(LongBreakCheckBox,BreakTextField) && checkCorrect(NotifyCheckBox,NotifyTextField))
-            return true;
+                && checkCorrect(LongBreakCheckBox,BreakTextField) && checkCorrect(NotifyCheckBox,NotifyTextField)) {
+            if(checkTextField(ShortTextField) || checkTextField(LongTextField))
+                return true;
+            else {
+                showAlertWrongValues();
+                return false;
+            }
+        }
         else {
             showAlertWrongValues();
             return false;
@@ -80,14 +86,15 @@ public class MainController {
 
     private boolean checkCorrect(CheckBox checkBox, TextField field){
         boolean result = true;
-        if(checkBox.isSelected() && checkTextField(field))
+        if(checkBox.isSelected())
         {
-            if(getValueTextField(field) != 0)
-                result = true;
-            else
-                result = false;
+            if(checkTextField(field)) {
+                if (getValueTextField(field) != 0)
+                    result = true;
+                else
+                    result = false;
+            } else result = false;
         }
-        else result = false;
         return result;
     }
 
@@ -235,6 +242,7 @@ public class MainController {
                                 alert.setOnHidden(event -> {
                                     timelineBreak.stop();
                                     timelineLong.play();
+                                    timelineShort.play();
                                 });
                                 if(changeTimeBreak(secondsBreak).equals("0:00")) timelineBreak.stop();
                             }
